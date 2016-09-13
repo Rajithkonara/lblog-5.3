@@ -2,17 +2,14 @@
     <div class="container">
 
       <div class="blog-header">
-        <h1 class="blog-title">The Bootstrap Blog</h1>
-        <p class="lead blog-description">The official example template of creating a blog with Bootstrap.</p>
+        <h1 class="blog-title">The RK Blog</h1>
       </div>
-
       <div class="row">
-
         <div class="col-sm-8 blog-main">
 		@foreach($articles as $article)
           <div class="blog-post">
-            <h2 class="blog-post-title">{{ $article->title }}</h2>
-            <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
+            <h2 class="blog-post-title"><a href="{{url('/articles',$article->id)}}">{{ $article->title }}</a></h2><br>
+            <p class="blog-post-meta">{{ $article->created_at }}</p>
             <p>{{ $article->body }}</p>
             <hr>
 
@@ -62,4 +59,4 @@
       </div><!-- /.row -->
 
     </div><!-- /.container -->
-
+    @include('partials.footer')

@@ -139,6 +139,9 @@ h6, .h6 {
 
 .blog-post {
   margin-bottom: 60px;
+    margin: 0 35% 0 0;
+    padding: 0 15px;
+    width: 100%;
 }
 .blog-post-title {
   margin-bottom: 5px;
@@ -163,4 +166,10 @@ h6, .h6 {
 }
 .blog-footer p:last-child {
   margin-bottom: 0;
+}
+
+.content-area {
+       margin: 0 35% 0 0;
+    padding: 0 15px;
+    width: 100%;
 }

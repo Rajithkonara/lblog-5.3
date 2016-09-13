@@ -16,16 +16,16 @@
 
     <!-- Custom styles for this template -->
     <link href="{{asset('css/blog.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}" />
   </head>
   <body>
     <div class="blog-masthead">
       <div class="container">
         <nav class="blog-nav">
-          <a class="blog-nav-item active" href="#">Home</a>
-          <a class="blog-nav-item" href="#">New features</a>
-          <a class="blog-nav-item" href="#">Press</a>
-          <a class="blog-nav-item" href="#">New hires</a>
-          <a class="blog-nav-item" href="#">About</a>
+          <a class="blog-nav-item active" href="{{ url('/') }}">Home</a>
+          <a class="blog-nav-item" href="{{ url('/articles/create') }}">Create</a>
+          <a class="blog-nav-item" align= href="#">New hires</a>
+          <a class="blog-nav-item" href="{{ url('/about') }}">About</a>
         </nav>
       </div>
     </div>
