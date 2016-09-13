@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticlesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth',['only' => 'create']);
+    }
 	/**
 	 * Load main page
 	 * @return view articles.index
@@ -24,35 +28,23 @@ class ArticlesController extends Controller
     	return view('articles.index',compact('articles'));
     }
 
-    public function show($id)
+    public function show(Article $article)
     {
-	    $article=Article::findOrFail($id);
-    	return view('articles.show',compact('article','id'));
+        return view('articles.show',compact('article'));
     }
+
     public function create()
     {
-    	$tags = Tag::all('id', 'name');
-    	return view('articles.create',compact('tags'));
-    }
-    public function store(ArticlesRequest $request)
-    {
-    	if (Auth::check()) {
-			$article = Auth::user()->articles()->create($request->all());
-			$article->tags()->attach($request->input('tags'));
-			 // Auth::user()->articles()->save(new Article($request->all())); //taking useid of
-            Auth::user()->notify(new ArticlePublished($article));
-            return redirect('/');
-    	}
-    	return redirect('/login');
-    	// if (Auth::Check()) {
-    	// $article = new Article();
-    	// $article->title = $request->get('title');
-     //    $article->body = $request->get('body');
-     //    $article->user_id = $request->user()->id;
-     //    dd($article);
-    	// }
-    	// return view('auth.login');
+       $tags = Tag::all('id', 'name');
+       return view('articles.create',compact('tags'));
+   }
 
-    }
+   public function store(ArticlesRequest $request)
+   {
+       $article = Auth::user()->articles()->create($request->all());
+       $article->tags()->attach($request->input('tags'));
+       Auth::user()->notify(new ArticlePublished($article));
+       return redirect('/');
+   }
 
 }
