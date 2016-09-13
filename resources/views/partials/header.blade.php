@@ -26,6 +26,10 @@
           <a class="blog-nav-item" href="{{ url('/articles/create') }}">Create</a>
           <a class="blog-nav-item" align= href="#">New hires</a>
           <a class="blog-nav-item" href="{{ url('/about') }}">About</a>
+          <a class="navbar-brand" rel="home" href="#">
+          <img src="{{ Auth::user()->getAvatarUrl() }}" class="profile-image img-circle">
+          </b></a>
+    </a>
         </nav>
       </div>
     </div>

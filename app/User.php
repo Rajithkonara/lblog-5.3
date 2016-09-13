@@ -36,4 +36,14 @@ class User extends Authenticatable
         return $this->hasMany('App\Article');
     }
 
+    /**
+    * Getting profile pic from gravatar
+    * @return url md5 hased email
+    */
+    public function getAvatarUrl()
+    {
+        $hash = md5(strtolower(trim($this->attributes['email'])));
+        return "http://www.gravatar.com/avatar/$hash";
+    }
+
 }
