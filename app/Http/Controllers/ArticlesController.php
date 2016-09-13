@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\Http\Requests;
 use App\Http\Requests\ArticlesRequest;
+use App\Notifications\ArticlePublished;
 use App\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -39,9 +40,10 @@ class ArticlesController extends Controller
 			$article = Auth::user()->articles()->create($request->all());
 			$article->tags()->attach($request->input('tags'));
 			 // Auth::user()->articles()->save(new Article($request->all())); //taking useid of
-
+            Auth::user()->notify(new ArticlePublished($article));
+            return redirect('/');
     	}
-    	return redirect('/');
+    	return redirect('/login');
     	// if (Auth::Check()) {
     	// $article = new Article();
     	// $article->title = $request->get('title');

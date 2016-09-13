@@ -19,7 +19,6 @@ Route::get('articles/{id}','ArticlesController@show');
 
 Route::post('articles','ArticlesController@store');
 
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
