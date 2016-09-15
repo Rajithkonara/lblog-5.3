@@ -3,19 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Events\ArticleCreated;
 use App\Http\Requests;
-use App\Http\Requests\ArticlesRequest;
+use App\Jobs\CreateArticle;
 use App\Notifications\ArticlePublished;
+use App\Repositories\ArticleRepository;
 use App\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
+
 class ArticlesController extends Controller
 {
-    public function __construct()
+    protected $article;
+
+    public function __construct(ArticleRepository $article)
     {
+        $this->article = $article;
         $this->middleware('auth',['only' => 'create']);
     }
 	/**
@@ -24,8 +30,8 @@ class ArticlesController extends Controller
 	 */
     public function index()
     {
-    	$articles = Article::latest()->get();
-    	return view('articles.index',compact('articles'));
+        $articles = $this->article->get();
+    	  return view('articles.index',compact('articles'));
     }
 
     public function show(Article $article)
@@ -35,16 +41,16 @@ class ArticlesController extends Controller
 
     public function create()
     {
-       $tags = Tag::all('id', 'name');
-       return view('articles.create',compact('tags'));
-   }
+        $tags = Tag::all('id', 'name');
+        return view('articles.create',compact('tags'));
+    }
 
-   public function store(ArticlesRequest $request)
-   {
-       $article = Auth::user()->articles()->create($request->all());
-       $article->tags()->attach($request->input('tags'));
-       Auth::user()->notify(new ArticlePublished($article));
-       return redirect('/');
-   }
+    public function store()
+    {
+        $job = new CreateArticle($this->article);
+        $this->dispatch($job);
+        event(new ArticleCreated($this->article));
+        return redirect('/');
+    }
 
 }

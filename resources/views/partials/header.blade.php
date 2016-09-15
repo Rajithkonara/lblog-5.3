@@ -31,7 +31,7 @@
           @endunless
           @if(Auth::check())
           <img src="{{ Auth::user()->getAvatarUrl() }}" class="profile-image img-circle">
-          <a class="navbar-brand" href="{{ url('/logout') }}">Login</a>
+          <a class="navbar-brand" href="{{ url('/logout') }}"><font color="white">Logout</font></a>
           @endif
         </b></a>
       </a>
