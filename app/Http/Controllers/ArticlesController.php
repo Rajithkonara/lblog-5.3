@@ -19,7 +19,7 @@ class ArticlesController extends Controller
 {
     protected $article;
 
-    public function __construct(ArticleRepository $article)
+    public function __construct(Article $article)
     {
         $this->article = $article;
         $this->middleware('auth',['only' => 'create']);
@@ -30,8 +30,8 @@ class ArticlesController extends Controller
 	 */
     public function index()
     {
-        $articles = $this->article->get();
-    	  return view('articles.index',compact('articles'));
+        $articles = $this->article->latest()->get();
+    	return view('articles.index',compact('articles'));
     }
 
     public function show(Article $article)

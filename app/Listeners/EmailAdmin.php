@@ -2,12 +2,16 @@
 
 namespace App\Listeners;
 
+use App\Article;
 use App\Events\ArticleCreated;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Notifications\ArticlePublished;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Auth;
 
 class EmailAdmin
 {
+
     /**
      * Create the event listener.
      *
@@ -15,7 +19,7 @@ class EmailAdmin
      */
     public function __construct()
     {
-        //
+
     }
 
     /**
@@ -26,6 +30,6 @@ class EmailAdmin
      */
     public function handle(ArticleCreated $event)
     {
-        //
+        Auth::user()->notify(new ArticlePublished($event->article));
     }
 }

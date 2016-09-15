@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Article;
 use App\Http\Requests\ArticlesRequest;
+use App\Notifications\ArticlePublished;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -21,10 +22,10 @@ class CreateArticle implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($article)
+    public function __construct()
     {
         //
-        $this->article = $article;
+
     }
 
     /**
@@ -34,13 +35,9 @@ class CreateArticle implements ShouldQueue
      */
     public function handle(ArticlesRequest $request)
     {
-
-       // $articles = $this->article->get();
-
        $article = Auth::user()->articles()->create($request->all());
        $article->tags()->attach($request->input('tags'));
+       Auth::user()->notify(new ArticlePublished($article));
 
-       // Auth::user()->notify(new ArticlePublished($article));
-        // dd($article);
     }
 }
