@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CreateArticle implements ShouldQueue
 {
-    protected $article;
 
     use InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $article;
     /**
      * Create a new job instance.
      *

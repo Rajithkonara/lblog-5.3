@@ -21,7 +21,7 @@ class ArticleCreated
      *
      * @return void
      */
-    public function __construct($article)
+    public function __construct(Article $article)
     {
         $this->article = $article;
     }

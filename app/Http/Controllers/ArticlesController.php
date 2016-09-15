@@ -7,7 +7,6 @@ use App\Events\ArticleCreated;
 use App\Http\Requests;
 use App\Jobs\CreateArticle;
 use App\Notifications\ArticlePublished;
-use App\Repositories\ArticleRepository;
 use App\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
