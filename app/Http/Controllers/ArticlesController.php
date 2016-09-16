@@ -3,56 +3,54 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Events\ArticleCreated;
 use App\Http\Requests;
-use App\Http\Requests\ArticlesRequest;
+use App\Jobs\CreateArticle;
 use App\Notifications\ArticlePublished;
+use App\Repositories\ArticleRepository;
 use App\Tag;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
+
 class ArticlesController extends Controller
 {
+    protected $article;
+
+    public function __construct(ArticleRepository $article)
+    {
+        $this->article = $article;
+        $this->middleware('auth',['only' => 'create']);
+    }
 	/**
 	 * Load main page
 	 * @return view articles.index
 	 */
     public function index()
     {
-    	$articles = Article::latest()->get();
-    	return view('articles.index',compact('articles'));
+        $articles = $this->article->get();
+    	  return view('articles.index',compact('articles'));
     }
 
-    public function show($id)
+    public function show(Article $article)
     {
-	    $article=Article::findOrFail($id);
-    	return view('articles.show',compact('article','id'));
+        return view('articles.show',compact('article'));
     }
+
     public function create()
     {
-    	$tags = Tag::all('id', 'name');
-    	return view('articles.create',compact('tags'));
+        $tags = Tag::all('id', 'name');
+        return view('articles.create',compact('tags'));
     }
-    public function store(ArticlesRequest $request)
-    {
-    	if (Auth::check()) {
-			$article = Auth::user()->articles()->create($request->all());
-			$article->tags()->attach($request->input('tags'));
-			 // Auth::user()->articles()->save(new Article($request->all())); //taking useid of
-            Auth::user()->notify(new ArticlePublished($article));
-            return redirect('/');
-    	}
-    	return redirect('/login');
-    	// if (Auth::Check()) {
-    	// $article = new Article();
-    	// $article->title = $request->get('title');
-     //    $article->body = $request->get('body');
-     //    $article->user_id = $request->user()->id;
-     //    dd($article);
-    	// }
-    	// return view('auth.login');
 
+    public function store()
+    {
+        $job = new CreateArticle($this->article);
+        $this->dispatch($job);
+        event(new ArticleCreated($this->article));
+        return redirect('/');
     }
 
 }

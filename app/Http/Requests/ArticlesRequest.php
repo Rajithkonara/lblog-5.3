@@ -1,11 +1,18 @@
 <?php
 
 namespace App\Http\Requests;
-
+use App\Repositories\ArticleRepository;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ArticlesRequest extends FormRequest
 {
+     private $article;
+
+     public function __construct(ArticleRepository $article)
+     {
+        $this->article = $article;
+     }
+
     /**
      * Determine if the user is authorized to make this request.
      *
