@@ -26,7 +26,7 @@ class CreateArticle implements ShouldQueue
      * Create a new job instance.
      * @param ArticlesRequest $request
      */
-    public function __construct(ArticlesRequest $request)
+    public function __construct($request)
     {
         $this->request = $request;
     }
@@ -34,13 +34,13 @@ class CreateArticle implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle()
+    public function handle(ArticlesRequest $request)
     {
         /** @var Article $article */
         $article = $this->createArticle();
 
         if ($article) {
-            $article->tags()->attach($this->request->input('tags'));
+            $article->tags()->attach($request->input('tags'));
             $this->notifyAuthor($article);
             event(new ArticleCreated($article));
         }
@@ -48,7 +48,7 @@ class CreateArticle implements ShouldQueue
 
     private function createArticle(): Article
     {
-        return Auth::user()->articles()->create($this->request->all());
+        return Auth::user()->articles()->create($this->request);
     }
 
     private function notifyAuthor(Article $article)

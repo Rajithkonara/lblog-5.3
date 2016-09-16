@@ -51,8 +51,8 @@ class ArticlesController extends Controller
      */
     public function store(ArticlesRequest $request)
     {
-        //dd($request->all());
-        $this->dispatch(new CreateArticle($request));
+//        dd($request->all());
+        $this->dispatch(new CreateArticle($request->all()));
         return redirect('/');
     }
 
