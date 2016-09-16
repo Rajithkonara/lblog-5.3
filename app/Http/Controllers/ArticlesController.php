@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\Events\ArticleCreated;
 use App\Http\Requests;
+use App\Http\Requests\ArticlesRequest;
+use App\Http\Requests\CreatePostRequest;
 use App\Jobs\CreateArticle;
 use App\Notifications\ArticlePublished;
 use App\Tag;
@@ -44,11 +46,13 @@ class ArticlesController extends Controller
         return view('articles.create',compact('tags'));
     }
 
-    public function store()
+    /**
+     * @param ArticlesRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function store(ArticlesRequest $request)
     {
-        $job = new CreateArticle($this->article);
-        $this->dispatch($job);
-        event(new ArticleCreated($this->article));
+        $this->dispatch(new CreateArticle($request));
         return redirect('/');
     }
 

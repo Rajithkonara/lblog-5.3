@@ -1,43 +1,52 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace App\Jobs;
 
-use App\Article;
-use App\Http\Requests\ArticlesRequest;
-use App\Notifications\ArticlePublished;
-use Illuminate\Bus\Queueable;
+use App\Http\Requests\CreatePostRequest;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class CreateArticle implements ShouldQueue
 {
+<<<<<<< HEAD
+=======
+    /** @var CreatePostRequest */
+    private $request;
+>>>>>>> 0e6652f2afd185791d19d1beccc67b561c7b0241
 
     use InteractsWithQueue, Queueable, SerializesModels;
 
     protected $article;
     /**
      * Create a new job instance.
-     *
-     * @return void
+     * @param ApacheRequest $request
      */
-    public function __construct()
+    public function __construct(ApacheRequest $request)
     {
-        //
-
+        $this->request = $request;
     }
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
-    public function handle(ArticlesRequest $request)
+    public function handle()
     {
-       $article = Auth::user()->articles()->create($request->all());
-       $article->tags()->attach($request->input('tags'));
-       Auth::user()->notify(new ArticlePublished($article));
+        /** @var Article $article */
+        $article = $this->createArticle();
 
+        if ($article) {
+            $article->tags()->attach($this->request->input('tags'));
+            $this->notifyAuthor($article);
+            event(new ArticleCreated($article));
+        }
+    }
+
+    private function createArticle(): Article
+    {
+        return Auth::user()->articles()->create($this->request->all());
+    }
+
+    private function notifyAuthor(Article $article)
+    {
+        Auth::user()->notify(new ArticlePublished($article));
     }
 }
