@@ -2,25 +2,31 @@
 
 namespace App\Jobs;
 
+use App\Article;
+use App\Events\ArticleCreated;
+use App\Http\Requests\ArticlesRequest;
 use App\Http\Requests\CreatePostRequest;
+use App\Notifications\ArticlePublished;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Auth;
+
 
 class CreateArticle implements ShouldQueue
 {
-<<<<<<< HEAD
-=======
+
     /** @var CreatePostRequest */
     private $request;
->>>>>>> 0e6652f2afd185791d19d1beccc67b561c7b0241
 
     use InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $article;
     /**
      * Create a new job instance.
-     * @param ApacheRequest $request
+     * @param ArticlesRequest $request
      */
-    public function __construct(ApacheRequest $request)
+    public function __construct(ArticlesRequest $request)
     {
         $this->request = $request;
     }
