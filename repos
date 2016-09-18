@@ -1,29 +1,58 @@
-<?php
-namespace App\Repositories;
+<?php declare(strict_types = 1);
+
+namespace App\Jobs;
 
 use App\Article;
+use App\Events\ArticleCreated;
 use App\Http\Requests\ArticlesRequest;
 use App\Notifications\ArticlePublished;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Auth;
 
-class ArticleRepository
+
+class CreateArticle implements ShouldQueue
 {
 
-	protected $article;
+    /** @var CreatePostRequest */
+    private $request;
 
-	public function __construct(Article $article)
-	{
-		$this->article = $article;
-	}
+    use InteractsWithQueue, Queueable, SerializesModels;
 
-	public function get()
-	{
-        return $this->article->latest()->get();
-	}
+    /**
+     * Create a new job instance.
+     * @param ArticlesRequest $request
+     */
+    public function __construct(array $request)
+    {
+        $this->request = $request;
+    }
 
-	public function saveArticle(ArticlesRequest $request)
-	{
-	   return $this->article->create($request);
-	}
+    /**
+     * Execute the job.
+     * @param ArticlesRequest $request
+     */
+    public function handle(ArticlesRequest $request)
+    {
+        /** @var Article $article */
+        $article = $this->createArticle();
 
+        if ($article) {
+            $article->tags()->attach($request->input('tags'));
+            $this->notifyAuthor($article);
+            event(new ArticleCreated($article));
+        }
+    }
+
+    private function createArticle(): Article
+    {
+        return Auth::user()->articles()->create($this->request);
+    }
+
+    private function notifyAuthor(Article $article)
+    {
+        Auth::user()->notify(new ArticlePublished($article));
+    }
 }

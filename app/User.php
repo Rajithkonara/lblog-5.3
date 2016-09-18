@@ -15,7 +15,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'password',
     ];
 
     /**
@@ -24,10 +26,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
-     /**
+    /**
      * A user can have many Articles
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -37,13 +40,17 @@ class User extends Authenticatable
     }
 
     /**
-    * Getting profile pic from gravatar
-    * @return url md5 hased email
-    */
+     * Getting profile pic from gravatar
+     * @return url md5 hased email
+     */
     public function getAvatarUrl()
     {
         $hash = md5(strtolower(trim($this->attributes['email'])));
         return "http://www.gravatar.com/avatar/$hash";
     }
 
+    public function owns($related)
+    {
+        return $this->id == $related->user_id;
+    }
 }

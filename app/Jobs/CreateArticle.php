@@ -5,7 +5,6 @@ namespace App\Jobs;
 use App\Article;
 use App\Events\ArticleCreated;
 use App\Http\Requests\ArticlesRequest;
-use App\Http\Requests\CreatePostRequest;
 use App\Notifications\ArticlePublished;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -24,25 +23,27 @@ class CreateArticle implements ShouldQueue
 
     /**
      * Create a new job instance.
-     * @param ArticlesRequest $request
+     * @param array $requestData
+     * @internal param ArticlesRequest $request
      */
-    public function __construct($request)
+    public function __construct(array $requestData)
     {
-        $this->request = $request;
+        $this->request = $requestData;
     }
 
     /**
      * Execute the job.
+     * @internal param ArticlesRequest $request
      */
-    public function handle(ArticlesRequest $request)
+    public function handle()
     {
         /** @var Article $article */
         $article = $this->createArticle();
 
         if ($article) {
-            $article->tags()->attach($request->input('tags'));
-            $this->notifyAuthor($article);
-            event(new ArticleCreated($article));
+            $article->tags()->attach(request('tags'));
+//            $this->notifyAuthor($article);
+//            event(new ArticleCreated($article));
         }
     }
 

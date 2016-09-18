@@ -1,19 +1,12 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace App\Http\Controllers;
 
 use App\Article;
-use App\Events\ArticleCreated;
-use App\Http\Requests;
 use App\Http\Requests\ArticlesRequest;
-use App\Http\Requests\CreatePostRequest;
 use App\Jobs\CreateArticle;
-use App\Notifications\ArticlePublished;
 use App\Tag;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Gate;
 
 class ArticlesController extends Controller
 {
@@ -24,6 +17,7 @@ class ArticlesController extends Controller
         $this->article = $article;
         $this->middleware('auth', ['only' => 'create']);
     }
+
     /**
      * Load main page
      * @return view articles.index
@@ -45,14 +39,33 @@ class ArticlesController extends Controller
         return view('articles.create', compact('tags'));
     }
 
+    public function edit(Article $article)
+    {
+        if (Gate::denies('update', $article)) {
+            abort(403, 'Sorry cannot you cannot edit');
+        }
+//        $this->authorize('update',$article);
+        return view('articles.edit', compact('article'));
+    }
+
     /**
      * @param ArticlesRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(ArticlesRequest $request)
     {
-//        dd($request->all());
         $this->dispatch(new CreateArticle($request->all()));
+        return redirect('/');
+    }
+
+    /**
+     * @param Article $article
+     * @param ArticlesRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function update(Article $article, ArticlesRequest $request)
+    {
+        $article->update($request->all());
         return redirect('/');
     }
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace App\Listeners;
 
@@ -25,7 +25,7 @@ class EmailAdmin
     /**
      * Handle the event.
      *
-     * @param  ArticleCreated  $event
+     * @param  ArticleCreated $event
      * @return void
      */
     public function handle(ArticleCreated $event)

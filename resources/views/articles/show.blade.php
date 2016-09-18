@@ -14,5 +14,8 @@
             @endforeach
         </ul>
     @endunless
+    @can('update',$article)
+        <a href="{{  url('articles/edit',$article->id)}} ">Edit</a>
+    @endcan
 </div>
 
