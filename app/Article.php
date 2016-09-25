@@ -14,15 +14,14 @@ class Article extends Model
     ];
 
     /**
-     * Listen to update event
+     * Listen to update event and hit db record
      * @return [type] [description]
      */
     public static function boot()
     {
         parent::boot();
-
         static::updating(function($article){
-        $article->adjustments()->attach(Auth::user()->id);
+            $article->adjust();
         });
     }
 
@@ -49,8 +48,26 @@ class Article extends Model
     {
         return $this->belongsToMany('App\User','adjustments')
         ->withTimestamps()
-        ->latest();
+        ->withPivot(['before', 'after'])  //tell elequont
+        ->latest('pivot_updated_at');
     }
 
+    public function adjust($userId = null, $diff = null)
+    {
+        $userId = $userId ?: Auth::user()->id;
+        $diff = $diff ?: $this->getDiff();
+
+        return $this->adjustments()->attach($userId,$diff);
+    }
+
+    protected function getDiff()
+    {
+        $changed = $this->getDirty();
+
+        $before = json_encode(array_intersect_key($this->fresh()->toArray(),$changed));
+        $after  = json_encode($changed);
+
+        return compact('before','after');
+    }
 
 }

@@ -17,6 +17,8 @@ class CreateAdjustmentsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->index()->unsigned;
             $table->integer('article_id')->index()->unsigned;
+            $table->text('before'); //original
+            $table->text('after'); //after
             $table->timestamps();
         });
     }

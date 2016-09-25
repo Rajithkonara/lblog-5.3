@@ -22,6 +22,7 @@
     <ul>
         @foreach($article->adjustments as $user)
             <li>{{ $user->email }} on {{ $user->pivot->updated_at->diffForHumans() }}</li>
+            {{-- <li>did changed {{ $user->pivot }}</li> --}}
         @endforeach
     </ul>
 
