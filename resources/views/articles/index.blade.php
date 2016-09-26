@@ -3,6 +3,7 @@
 
   <div class="blog-header">
     <h1 class="blog-title">The RK Blog</h1>
+    <p>Page Visits {{ $visits }}</p>
   </div>
   <div class="row">
     <div class="col-sm-8 blog-main">

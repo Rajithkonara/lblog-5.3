@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Redis;
+
 
 
 
@@ -24,3 +26,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index');
 
 Route::get('amp','ArticlesController@apm');
+

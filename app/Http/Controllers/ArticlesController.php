@@ -7,6 +7,7 @@ use App\Http\Requests\ArticlesRequest;
 use App\Jobs\CreateArticle;
 use App\Tag;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Redis;
 
 class ArticlesController extends Controller
 {
@@ -24,8 +25,11 @@ class ArticlesController extends Controller
      */
     public function index()
     {
+        //site visits
+        $visits = Redis::incr('visits');
         $articles = $this->article->latest()->get();
-        return view('articles.index', compact('articles'));
+        return view('articles.index', compact('articles'))->
+        withVisits($visits);
     }
 
     public function show(Article $article)
