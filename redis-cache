@@ -1,0 +1,56 @@
+Route::get('/', function() ){
+
+ 
+if($value =  Redis::exists('articles.all')){
+
+    return json_decode($value);
+
+}
+
+
+$article = App\Article::all();
+
+
+Redis::set('articles.all', $articles);
+
+
+//set a value with expiration
+
+Redis::setex('articles.all', 60, $articles);
+
+return $articles;
+
+}
+
+
+
+///////////refactor////////////////////
+
+
+function remember($key, $minutes, $callback) {
+   
+ if($value =  Redis::exists($key)){
+
+    return json_decode($value);
+
+  }
+
+
+
+ Redis::setex($key, $minutes,  $value = $callback());
+
+ return $value;
+
+
+}
+
+
+//next
+
+Route::get('/', function () {
+  return remember('articles.all', 60*60, function() {
+
+    return App\Article::all();
+  
+   });
+});
