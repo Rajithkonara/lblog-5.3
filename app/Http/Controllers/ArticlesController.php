@@ -72,12 +72,4 @@ class ArticlesController extends Controller
         $article->update($request->all());
         return redirect('/');
     }
-
-
-    public function apm(Article $article)
-    {
-          $articles = $this->article->latest()->get();
-          return view('amp', compact('articles'));
-    }
-
 }
