@@ -25,7 +25,6 @@ class Article extends Model
         });
     }
 
-
     /**
      * [One Article belong to one user]
      * @return [type] [description]

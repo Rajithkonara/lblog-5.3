@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Redis;
 
-
-
-
 Route::get('/','ArticlesController@index');
 
 Route::get('articles/create','ArticlesController@create');
@@ -24,6 +21,4 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index');
-
-Route::get('amp','ArticlesController@apm');
 
