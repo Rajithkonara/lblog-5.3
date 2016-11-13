@@ -49,6 +49,11 @@ class User extends Authenticatable
         return "http://www.gravatar.com/avatar/$hash";
     }
 
+    /**
+     * User owns Article
+     * @param  $related
+     * @return bool
+     */
     public function owns($related)
     {
         return $this->id == $related->user_id;

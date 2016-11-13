@@ -14,6 +14,8 @@ Route::get('articles/edit/{articles}','ArticlesController@edit');
 
 Route::post('articles/edit/{articles}','ArticlesController@update');
 
+Route::delete('articles/delete/{articles}', 'ArticlesController@destroy');
+
 Route::post('articles','ArticlesController@store');
 
 Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');

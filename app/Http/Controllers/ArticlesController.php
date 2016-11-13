@@ -52,6 +52,15 @@ class ArticlesController extends Controller
         return view('articles.edit', compact('article'));
     }
 
+    public function delete(Article $article)
+    {
+        if (Gate::denies('delete', $article)) {
+            abort(403, 'You have no permission');
+        }
+
+        return view('articles.show', compact('article'));
+    }
+
     /**
      * @param ArticlesRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
@@ -59,6 +68,7 @@ class ArticlesController extends Controller
     public function store(ArticlesRequest $request)
     {
         $this->dispatch(new CreateArticle($request->all()));
+
         return redirect('/');
     }
 
@@ -70,6 +80,18 @@ class ArticlesController extends Controller
     public function update(Article $article, ArticlesRequest $request)
     {
         $article->update($request->all());
+
         return redirect('/');
+    }
+
+    /**
+     * Article $article
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function destroy(Article $article)
+    {
+       $article->delete($article);
+
+       return redirect('/');
     }
 }
