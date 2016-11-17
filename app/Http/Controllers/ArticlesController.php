@@ -67,6 +67,23 @@ class ArticlesController extends Controller
      */
     public function store(ArticlesRequest $request)
     {
+
+         // $tags =  $request->tags;
+
+         // foreach ($tags as $tag) {
+         //     $tag_check = Tag::where('id',$tag)->get()->pluck('id');
+
+         //     if (!$tag_check->count()) {
+         //          $newTag = Tag::firstOrCreate(['name' => $tag]);
+         //          continue;
+         //     }
+         //     // $newTag = Tag::create(['name' => $tag]);
+
+         //     $tag_info = $tag_check->first();
+         //     // $article->tags()->attach($tag_info->id);
+         // }
+
+
         $this->dispatch(new CreateArticle($request->all()));
 
         return redirect('/');

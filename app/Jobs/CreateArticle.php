@@ -6,10 +6,11 @@ use App\Article;
 use App\Events\ArticleCreated;
 use App\Http\Requests\ArticlesRequest;
 use App\Notifications\ArticlePublished;
+use App\Tag;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -41,7 +42,21 @@ class CreateArticle implements ShouldQueue
         $article = $this->createArticle();
 
         if ($article) {
-            $article->tags()->attach(request('tags'));
+
+            $tags = request('tags');
+
+            foreach ($tags as $tag) {
+               $tag_check = Tag::where('id',$tag)->get()->pluck('id');
+
+               if (!$tag_check->count()) {
+                  $newTag = Tag::firstOrCreate(['name' => $tag]);
+                  $article->tags()->attach($newTag);
+                  continue;
+              }
+              $tag_info = $tag_check->all();
+          }
+
+              $article->tags()->attach($tag_info);
 //            $this->notifyAuthor($article);
 //            event(new ArticleCreated($article));
         }
